@@ -12,7 +12,7 @@
 
 // Default stack size for the tasks. It can be reduced to 1024 if task is not using lot of memory.
 #define DEFAULT_STACK_SIZE 2048 
-
+//Aulis was here
 //Add here necessary states
 enum state { IDLE=1 };
 enum state programState = IDLE;
