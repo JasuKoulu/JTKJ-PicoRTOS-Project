@@ -1,7 +1,7 @@
 // 6 points distributed: To Joose 4, Jasu 1 and Aulis 1
-// Joose mainly wrote and cleaned the code
-// Jasu wrote some code and the plan for the project
-// Aulis contributed to the code and shot and edited the video
+// Joose Kalliokoski mainly wrote and cleaned the code
+// Jasu Niskanen wrote some code and the plan for the project
+// Aulis Neitiniemi contributed to the code and shot and edited the video
 // We all participated on planning the functionality
 #include <stdio.h>
 #include <string.h>
