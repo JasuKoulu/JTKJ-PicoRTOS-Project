@@ -155,11 +155,7 @@ int main() {
                 NULL,               // (en) Arguments of the task 
                 2,                  // (en) Priority of this task
                 &myWriteTask);    // (en) A handle to control the execution of this task
-    /*
-    if(result != pdPASS) {
-        printf("Example Task creation failed\n");
-        return 0;
-    }*/
+
 
 
     // Start the scheduler (never returns)
