@@ -21,6 +21,8 @@ enum state programState = IDLE;
 char dot = '.';
 char dash = '-';
 char space = ' ';
+/*The message-array was originally intended for displayTask functionality, but we didn't dare touch it this close to 
+the deadline. The program should function without it.*/
 char message[BUFFER_SIZE];
 
 
