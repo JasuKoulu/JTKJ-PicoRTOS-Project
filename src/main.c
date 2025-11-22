@@ -16,7 +16,7 @@
 #define BUFFER_SIZE 100
 //Aulis was here
 //Add here necessary states
-enum state { IDLE=1, WRITE/*, DISPLAY*/};
+enum state { IDLE=1, WRITE/*, DISPLAY*/}; // Initializing FSM and the state variable
 enum state programState = IDLE;
 char dot = '.';
 char dash = '-';
@@ -25,6 +25,7 @@ char message[BUFFER_SIZE];
 
 
 /*
+We realized we did not need this task for Tier 1 implementation
 static void displayTask(void *pvParameters) {
     int spaceCount = 0;
     while(1){
@@ -67,7 +68,7 @@ void writeTask(void *pvParameters) {
         usb_serial_print ("Gyro return:  %d\n", _gyro);
         int _accel = ICM42670_startAccel(ICM42670_ACCEL_ODR_DEFAULT, ICM42670_ACCEL_FSR_DEFAULT);
         usb_serial_print ("Accel return:  %d\n", _accel);*/
-    } else {
+    } else { // This is not supposed to be reached
        // usb_serial_print("Failed to initialize ICM-42670P.\n");
     }
     // Start collection data here. Infinite loop. 
@@ -76,9 +77,6 @@ void writeTask(void *pvParameters) {
     while (1)
     {
         if(programState == WRITE) {
-            //printf("Writing...\n");
-                //memset(message, 0, BUFFER_SIZE); // Clear the message buffer
-            
             for(int i=0;i<BUFFER_SIZE;i++) {
                 vTaskDelay(pdMS_TO_TICKS(500));
                 if (ICM42670_read_sensor_data(&ax, &ay, &az, &gx, &gy, &gz, &t) == 0) {
@@ -94,7 +92,7 @@ void writeTask(void *pvParameters) {
                         printf("' '\n");
                         message[i] = space;
                         spaceCount++;
-                        if(spaceCount==2) { // Kahden peräkkäisen välilyönnin jälkeen vaihdetaan tilaa DISPLAY
+                        if(spaceCount==2) { // Kahden peräkkäisen välilyönnin jälkeen vaihdetaan tilaa IDLE
                             printf("Sen pituinen se!\n");
                             programState = IDLE;
                             spaceCount = 0;
@@ -102,20 +100,13 @@ void writeTask(void *pvParameters) {
                             }
                         }
                     }
-            }
-            
-
-
-        
-        
+            }  
     }
     vTaskDelay(pdMS_TO_TICKS(500));
-
-
     }
 }
 
-void buttonFxn(uint gpio, uint32_t eventMask) {
+void buttonFxn(uint gpio, uint32_t eventMask) { // IDLE -> WRITE
     programState = WRITE;
 }
 
@@ -128,20 +119,13 @@ int main() {
     init_hat_sdk();
     sleep_ms(300); //Wait some time so initialization of USB and hat is done.
 
-    //TaskHandle_t myExampleTask = NULL;
-    gpio_init(BUTTON1);
+    gpio_init(BUTTON1); // Initializing and setting up a button interrupt
     gpio_set_irq_enabled_with_callback(BUTTON1, GPIO_IRQ_EDGE_FALL, true, &buttonFxn);
 
     //TaskHandle_t myDisplayTask = NULL;
     TaskHandle_t myWriteTask = NULL;
-    // Create the tasks with xTaskCreate
-    /*BaseType_t result = xTaskCreate(example_task,       // (en) Task function
-                "example",              // (en) Name of the task 
-                DEFAULT_STACK_SIZE, // (en) Size of the stack for this task (in words). Generally 1024 or 2048
-                NULL,               // (en) Arguments of the task 
-                2,                  // (en) Priority of this task
-                &myExampleTask);    // (en) A handle to control the execution of this task
-*/
+
+    
     /*BaseType_t displayResult = xTaskCreate(displayTask,       // (en) Task function
                 "display",              // (en) Name of the task 
                 DEFAULT_STACK_SIZE, // (en) Size of the stack for this task (in words). Generally 1024 or 2048
